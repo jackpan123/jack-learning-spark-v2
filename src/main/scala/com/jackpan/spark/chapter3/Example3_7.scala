@@ -40,6 +40,11 @@ object Example3_7 {
     println(blogsDF.printSchema)
     println(blogsDF.schema)
 
+    println(blogsDF.columns)
+
+    blogsDF.select(expr("Hits * 2")).show(2)
+    blogsDF.select(col("Hits") * 2).show(2)
+
 //    blogsDF.select(expr("Hits") * 2).show(2)
 //    blogsDF.select(col("Hits") * 2).show(2)
 //    blogsDF.select(expr("Hits * 2")).show(2)
