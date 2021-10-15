@@ -51,5 +51,18 @@ object CommonDataFrameOperations {
       .csv(sfFiredFile)
 
     fireDF.show(2)
+
+//    val parquetPath = "data/test-dada"
+//    fireDF.write.format("parquet").save(parquetPath)
+
+    // validate parquet file
+//    val parquetPath = "data/test-dada"
+//    val fireDF = spark.read.parquet(parquetPath)
+//    println(fireDF.printSchema())
+//    fireDF.show(2)
+
+//    val parquetTable = "data-test-table"
+//    fireDF.write.format("parquet").saveAsTable(parquetTable)
+
   }
 }
