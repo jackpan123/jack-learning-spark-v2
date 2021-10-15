@@ -2,7 +2,7 @@ package com.jackpan.spark.chapter3
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.functions.{col, expr}
+import org.apache.spark.sql.functions._
 
 /**
  *
@@ -45,11 +45,18 @@ object Example3_7 {
     blogsDF.select(expr("Hits * 2")).show(2)
     blogsDF.select(col("Hits") * 2).show(2)
 
-//    blogsDF.select(expr("Hits") * 2).show(2)
-//    blogsDF.select(col("Hits") * 2).show(2)
-//    blogsDF.select(expr("Hits * 2")).show(2)
-//
-//    blogsDF.withColumn("Big Hitters", (e))
+    blogsDF.withColumn("Big Hitters", (expr("Hits > 10000"))).show()
+
+    blogsDF
+      .withColumn("AuthorsId", (concat(expr("First"), expr("Last"), expr("Id"))))
+      .select(col("AuthorsId"))
+      .show(4)
+
+    blogsDF.select(expr("Hits")).show(2)
+    blogsDF.select(col("Hits")).show(2)
+    blogsDF.select("Hits").show(2)
+
+    blogsDF.sort(col("Id").desc).show()
 
   }
 }
