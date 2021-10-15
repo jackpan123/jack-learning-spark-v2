@@ -64,5 +64,22 @@ object CommonDataFrameOperations {
 //    val parquetTable = "data-test-table"
 //    fireDF.write.format("parquet").saveAsTable(parquetTable)
 
+    val fewFireDF = fireDF
+      .select("IncidentNumber", "AvailableDtTm", "CallType")
+      .where(col("CallType") =!= "Medical Incident")
+    fewFireDF.show(5, false)
+
+    fewFireDF
+      .select("CallType")
+      .where(col("CallType").isNotNull)
+      .agg(countDistinct("CallType") as "DistinctCallTypes")
+      .show()
+
+    fireDF
+      .select("CallType")
+      .where(col("CallType").isNotNull)
+      .distinct()
+      .show(10, false)
+
   }
 }
