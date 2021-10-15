@@ -81,5 +81,11 @@ object CommonDataFrameOperations {
       .distinct()
       .show(10, false)
 
+    val newFireDF = fireDF.withColumnRenamed("Delay", "ResponseDelayedinMins")
+    newFireDF
+      .select("ResponseDelayedinMins")
+      .where(col("ResponseDelayedinMins") > 5)
+      .show(5, false)
+
   }
 }
