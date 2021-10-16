@@ -105,5 +105,13 @@ object CommonDataFrameOperations {
       .orderBy(year(col("IncidentDate")))
       .show()
 
+    fireTsDF
+      .select("CallType")
+      .where(col("CallType").isNotNull)
+      .groupBy("CallType")
+      .count()
+      .orderBy(desc("count"))
+      .show(10, false)
+
   }
 }
