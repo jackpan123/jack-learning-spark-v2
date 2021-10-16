@@ -99,5 +99,11 @@ object CommonDataFrameOperations {
       .select("IncidentDate", "OnWatchDate", "AvailableDtTS")
       .show(5, false)
 
+    fireTsDF
+      .select(year(col("IncidentDate")))
+      .distinct()
+      .orderBy(year(col("IncidentDate")))
+      .show()
+
   }
 }
