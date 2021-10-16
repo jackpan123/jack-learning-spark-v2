@@ -3,6 +3,7 @@ package com.jackpan.spark.chapter3
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.{functions => F}
 /**
  *
  *
@@ -113,5 +114,9 @@ object CommonDataFrameOperations {
       .orderBy(desc("count"))
       .show(10, false)
 
+    fireTsDF
+      .select(F.sum("NumAlarms"), F.avg("ResponseDelayedinMins"),
+        F.min("ResponseDelayedinMins"), F.max("ResponseDelayedinMins"))
+      .show()
   }
 }
