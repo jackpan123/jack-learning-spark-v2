@@ -29,11 +29,22 @@ object SparkSQLExampleApp {
     df.createOrReplaceTempView("us_delay_flights_tbl")
     spark.sql("""SELECT distance, origin, destination FROM us_delay_flights_tbl WHERE distance > 1000 ORDER BY distance DESC""")
       .show(10)
-    
+
+    df.select("distance", "origin", "destination")
+        .where(col("distance") > 1000)
+        .orderBy(desc("distance")).show(10)
 
     spark.sql(
       """SELECT date, delay, origin, destination FROM us_delay_flights_tbl WHERE delay > 120 AND ORIGIN = 'SFO' AND DESTINATION = 'ORD' ORDER BY delay DESC""")
       .show(10)
+
+    df.select("date","delay", "origin", "destination")
+        .where(col("delay") > 120
+          and col("ORIGIN").equalTo( "SFO" )
+          and col("DESTINATION").equalTo( "ORD" ))
+        .orderBy(desc("delay"))
+        .show(10)
+
 
     df.withColumn("newDate", to_timestamp(col("date"), "MMddHHmm"))
       .drop("date").createOrReplaceTempView("us_delay_flights_table")
@@ -55,6 +66,15 @@ object SparkSQLExampleApp {
                ORDER BY origin, delay DESC
          """).show(10)
 
+    df.select("delay", "origin", "destination")
+      .withColumn("Flight_Delays", when(col("delay") > 360, "Very Long Delays")
+      .when(col("delay") >= 120 and col("delay") < 360, "Long Delays")
+        .when(col("delay") >= 60 and col("delay") < 120, "Short Delays")
+          .when(col("delay") > 0 and col("delay") < 60, "Tolerable Delays")
+            .when(col("delay").equalTo(0), "No Delays")
+            .otherwise("Early"))
+      .orderBy(col("origin").asc, col("delay").desc)
+      .show(10)
 
   }
 }
