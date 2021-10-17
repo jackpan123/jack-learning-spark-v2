@@ -17,20 +17,24 @@ object TableOperation {
       .appName("TableOperation")
       .getOrCreate()
 
-//    spark.sql("CREATE DATABASE learn_spark_db")
-//    spark.sql("USE learn_spark_db")
+    spark.sql("CREATE DATABASE learn_spark_db")
+    spark.sql("USE learn_spark_db")
 
     val csvFile = "data/departuredelays.csv"
     val schema = "date STRING, delay INT, distance INT, origin STRING, destination STRING"
     val flights_df = spark.read.schema(schema).csv(csvFile)
-    // Create managed table
-    //flights_df.write.saveAsTable("managed_us_delay_flights_tbl")
-
-    // Create unmanaged table
+//    // Create managed table
+    flights_df.write.saveAsTable("managed_us_delay_flights_tbl")
+//
+//    // Create unmanaged table
     flights_df
       .write
       .option("path", "/Users/jackpan/JackPanDocuments/temporary/us_flights_delay")
       .saveAsTable("us_delay_flights_tbl")
+
+    spark.catalog.listDatabases()
+    spark.catalog.listTables().show()
+    spark.catalog.listColumns("managed_us_delay_flights_tbl")
 
   }
 }
