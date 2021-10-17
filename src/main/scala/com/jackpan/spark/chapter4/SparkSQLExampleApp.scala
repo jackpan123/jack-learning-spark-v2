@@ -1,6 +1,8 @@
 package com.jackpan.spark.chapter4
 import org.apache.spark.sql.SparkSession
-
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.functions._
 /**
  *
  *
@@ -27,5 +29,17 @@ object SparkSQLExampleApp {
     df.createOrReplaceTempView("us_delay_flights_tbl")
     spark.sql("""SELECT distance, origin, destination FROM us_delay_flights_tbl WHERE distance > 1000 ORDER BY distance DESC""")
       .show(10)
+
+    spark.sql(
+      """SELECT date, delay, origin, destination FROM us_delay_flights_tbl WHERE delay > 120 AND ORIGIN = 'SFO' AND DESTINATION = 'ORD' ORDER BY delay DESC""")
+      .show(10)
+
+    df.withColumn("newDate", to_timestamp(col("date"), "MMddHHmm"))
+      .drop("date").createOrReplaceTempView("us_delay_flights_table")
+    spark.sql(
+      """SELECT MONTH(newDate) FROM us_delay_flights_table WHERE delay > 120 AND ORIGIN = 'SFO' AND DESTINATION = 'ORD' GROUP BY MONTH(newDate) ORDER BY MONTH(newDate) DESC""")
+      .show(10)
+
+
   }
 }
