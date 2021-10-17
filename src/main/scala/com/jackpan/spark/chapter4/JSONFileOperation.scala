@@ -27,13 +27,12 @@ object JSONFileOperation {
 
     df.write.format("json")
       .mode("overwrite")
-      .option("compression", "snappy")
       .save("/Users/jackpan/JackPanDocuments/temporary/df_json")
 
-//    df.write.format("json")
-//      .mode("overwrite")
-//      .saveAsTable("us_delay_flights_tbl")
-//
-//    spark.sql("""SELECT * FROM us_delay_flights_tbl""").show()
+    df.write.format("json")
+      .mode("overwrite")
+      .saveAsTable("us_delay_flights_tbl")
+
+    spark.sql("""SELECT * FROM us_delay_flights_tbl""").show()
   }
 }
