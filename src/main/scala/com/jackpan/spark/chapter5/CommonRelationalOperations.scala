@@ -71,5 +71,16 @@ object CommonRelationalOperations {
         .agg(sum("delay") as "TotalDelays")
     delayWindowsDF.createOrReplaceTempView("departureDelaysWindow")
     spark.sql("SELECT * FROM departureDelaysWindow").show()
+
+    spark.sql(
+      """
+        SELECT origin, destination, ToTalDelays, rank
+          FROM (
+          SELECT origin, destination, ToTalDelays, dense_rank()
+            OVER (PARTITION BY origin ORDER BY ToTalDelays DESC) as rank
+            FROM departureDelaysWindow
+          ) t
+          WHERE rank <= 3
+        """).show()
   }
 }
