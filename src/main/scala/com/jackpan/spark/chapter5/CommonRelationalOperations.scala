@@ -48,5 +48,12 @@ object CommonRelationalOperations {
     spark.sql("SELECT * FROM departureDelays LIMIT 10").show()
 
     spark.sql("SELECT * FROM foo LIMIT 10").show()
+
+    val bar = delays.union(foo)
+    bar.createOrReplaceTempView("bar")
+    bar.filter(
+      expr(
+        """origin == 'SEA' AND destination == 'SFO' AND
+          date like '01010%' AND delay > 0""")).show()
   }
 }
