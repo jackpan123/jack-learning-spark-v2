@@ -55,5 +55,11 @@ object CommonRelationalOperations {
       expr(
         """origin == 'SEA' AND destination == 'SFO' AND
           date like '01010%' AND delay > 0""")).show()
+
+    foo.join(
+      airports.as("air"),
+      col("air.IATA") === col("origin")
+    ).select("City", "State", "date", "delay", "distance", "destination").show()
+
   }
 }
