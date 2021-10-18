@@ -44,6 +44,7 @@ object CommonRelationalOperations {
       expr(
         """origin == 'SEA' AND destination == 'SFO' AND
           date like '01010%' AND delay > 0"""))
+
     foo.createOrReplaceTempView("foo")
 
     spark.sql("SELECT * FROM airports_na LIMIT 10").show()
@@ -82,5 +83,18 @@ object CommonRelationalOperations {
           ) t
           WHERE rank <= 3
         """).show()
+
+    val foo2 = foo.withColumn(
+      "status",
+      expr("CASE WHEN delay <= 10 THEN 'On-time' ELSE 'Delayed' END")
+    )
+
+    foo2.show()
+
+    val foo3 = foo2.drop("delay")
+    foo3.show()
+
+    val foo4 = foo3.withColumnRenamed("status", "flight_status")
+    foo4.show()
   }
 }
