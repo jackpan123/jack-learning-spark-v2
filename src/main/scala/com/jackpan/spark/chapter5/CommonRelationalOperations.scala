@@ -30,7 +30,10 @@ object CommonRelationalOperations {
 
     airports.createOrReplaceTempView("airports_na")
 
+    val schema = "date STRING, delay INT, distance INT, origin STRING, destination STRING"
+
     val delays = spark.read
+      .schema(schema)
       .option("header", "true")
       .csv(delaysPath)
       .withColumn("delay", expr("CAST(delay as INT) as delay"))
@@ -61,5 +64,12 @@ object CommonRelationalOperations {
       col("air.IATA") === col("origin")
     ).select("City", "State", "date", "delay", "distance", "destination").show()
 
+    val delayWindowsDF = delays.select("origin", "destination", "delay")
+        .where(col("origin") isin("SEA", "SFO", "JFK")
+          and(col("destination") isin("SEA", "SFO", "JFK", "DEN", "ORD", "LAX", "ATL")))
+        .groupBy(col("origin"), col("destination"))
+        .agg(sum("delay") as "TotalDelays")
+    delayWindowsDF.createOrReplaceTempView("departureDelaysWindow")
+    spark.sql("SELECT * FROM departureDelaysWindow").show()
   }
 }
