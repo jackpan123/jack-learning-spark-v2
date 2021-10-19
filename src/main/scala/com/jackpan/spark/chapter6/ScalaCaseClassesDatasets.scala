@@ -11,15 +11,17 @@ import org.apache.spark.sql.Encoders
  * @version v1.0 2021/10/18 23:05
  */
 object ScalaCaseClassesDatasets {
+  case class Bloggers(id:Long, first:String, last:String, url:String, Published:String,
+                      hits: Long, campaigns:Array[String])
+
   def main(args: Array[String]): Unit = {
 
     val spark = SparkSession
       .builder()
       .appName("CommonDataFrameOperations")
       .getOrCreate()
+
     implicit val blogger =  Encoders.product[Bloggers]
-    case class Bloggers(Id:Int, First:String, Last:String, Url:String, Date:String,
-                        Hits: Int, Campaigns:Array[String])
 
     val bloggers = "data/blogs.json"
     val bloggersDS = spark
@@ -28,5 +30,7 @@ object ScalaCaseClassesDatasets {
       .option("path", bloggers)
       .load()
       .as[Bloggers]
+
+    bloggersDS.show()
   }
 }
