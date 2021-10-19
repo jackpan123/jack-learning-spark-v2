@@ -1,7 +1,6 @@
 package com.jackpan.spark.chapter6
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.Encoders
 
 
 /**
@@ -18,11 +17,9 @@ object ScalaCaseClassesDatasets {
 
     val spark = SparkSession
       .builder()
-      .appName("CommonDataFrameOperations")
+      .appName("ScalaCaseClassesDatasets")
       .getOrCreate()
-
-    implicit val blogger =  Encoders.product[Bloggers]
-
+    import spark.implicits._
     val bloggers = "data/blogs.json"
     val bloggersDS = spark
       .read
