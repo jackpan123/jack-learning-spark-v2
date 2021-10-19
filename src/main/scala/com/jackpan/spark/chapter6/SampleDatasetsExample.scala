@@ -13,6 +13,8 @@ import org.apache.spark.sql.SparkSession
 object SampleDatasetsExample {
 
   case class Usage(uid:Int, uname:String, usage:Int)
+  case class UsageCost(uid: Int, uname:String, usage: Int, cost: Double)
+
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder()
@@ -57,5 +59,16 @@ object SampleDatasetsExample {
     }
 
     dsUsage.map(u => {computeCostUsage(u.usage)}).show(5, false)
+
+    def computeUserCostUsage(u: Usage): UsageCost = {
+      val v = if (u.usage > 750) {
+        u.usage * .15
+      } else {
+        u.usage * .50
+      }
+      UsageCost(u.uid, u.uname, u.usage, v)
+    }
+
+    dsUsage.map(u => {computeUserCostUsage(u)}).show(5)
   }
 }
