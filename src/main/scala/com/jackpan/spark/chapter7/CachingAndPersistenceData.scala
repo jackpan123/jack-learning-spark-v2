@@ -16,8 +16,7 @@ object CachingAndPersistenceData {
       .appName("CachingAndPersistenceData")
       .getOrCreate()
 
-    val df = spark.range(1 * 10000000).toDF("id")
-      .withColumn("square", col("id") * col("id"))
+    val df = spark.range(1 * 10000000).toDF("id").withColumn("square", col("id") * col("id"))
 
     df.cache()
     df.count()
