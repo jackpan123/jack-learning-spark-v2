@@ -3,6 +3,8 @@ package com.jackpan.spark.chapter7
 import org.apache.spark.sql.SparkSession
 import scala.util.Random
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.SaveMode
+
 
 /**
  *
@@ -43,5 +45,31 @@ object SortMergeJoinExample {
     usersOrdersDF.show(false)
 
     usersOrdersDF.explain()
+
+    usersDF.orderBy(asc("uid"))
+      .write.format("parquet")
+      .bucketBy(8, "uid")
+      .mode(SaveMode.Overwrite)
+      .saveAsTable("UsersTbl")
+
+    ordersDF.orderBy(asc("users_id"))
+      .write.format("parquet")
+      .bucketBy(8, "users_id")
+      .mode(SaveMode.Overwrite)
+      .saveAsTable("OrdersTbl")
+
+    spark.sql("CACHE TABLE UsersTbl")
+    spark.sql("CACHE TABLE OrdersTbl")
+
+    // Read them back in
+    val usersBucketDF = spark.table("UsersTbl")
+    val ordersBucketDF = spark.table("OrdersTbl")
+
+    // Do the join and show the results
+    val joinUsersOrdersBucketDF = ordersBucketDF
+      .join(usersBucketDF, $"users_id" === $"uid")
+
+    joinUsersOrdersBucketDF.show(false)
+    joinUsersOrdersBucketDF.explain()
   }
 }
