@@ -16,26 +16,15 @@ object SparkStreamExample {
       .appName("SparkStreamExample")
       .getOrCreate()
 
-    val delaysPath =
-      "data/departuredelays.csv"
-    val schema = "date STRING, delay INT, distance INT, origin STRING, destination STRING"
-    val lines = spark.readStream
-      .schema(schema)
-      .format("csv")
-      .option("header", "true")
-      .load(delaysPath)
-
-    val words = lines.select(split(col("date"), "0").as("word"))
+    val lines = spark
+      .readStream.format("socket") .option("host", "localhost") .option("port", 9999) .load()
+    val words = lines.select(split(col("value"), "\\s").as("word"))
     val counts = words.groupBy("word").count()
-
-    val checkpointDir = "/Users/jackpan/JackPanDocuments/temporary"
+    val checkpointDir = "/Users/jackpan/JackPanDocuments/temporary/checkpoints"
     val streamingQuery = counts.writeStream
       .format("console")
-      .outputMode("complete")
-      .trigger(Trigger.ProcessingTime("1 second"))
-      .option("checkpointLocation", checkpointDir)
-      .start()
-
+      .outputMode("complete") .trigger(Trigger.ProcessingTime("1 second")) .option("checkpointLocation", checkpointDir) .start()
     streamingQuery.awaitTermination()
+
   }
 }
