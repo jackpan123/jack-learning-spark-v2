@@ -2,6 +2,7 @@ package com.jackpan.spark.chapter8
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.streaming._
 /**
  *
  *
@@ -26,7 +27,15 @@ object SparkStreamExample {
 
     val words = lines.select(split(col("date"), "0").as("word"))
     val counts = words.groupBy("word").count()
-    println(counts)
 
+    val checkpointDir = "/Users/jackpan/JackPanDocuments/temporary"
+    val streamingQuery = counts.writeStream
+      .format("console")
+      .outputMode("complete")
+      .trigger(Trigger.ProcessingTime("1 second"))
+      .option("checkpointLocation", checkpointDir)
+      .start()
+
+    streamingQuery.awaitTermination()
   }
 }
