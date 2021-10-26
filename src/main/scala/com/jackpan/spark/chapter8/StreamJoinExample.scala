@@ -46,5 +46,12 @@ object StreamJoinExample {
         """
           clickAdId = impressionAdId AND
           clickTime BETWEEN impressionTime AND  impressionTime + interval 1 hour"""))
+
+    impressionsWithWatermark.join(clicksWithWatermark,
+      expr(
+        """
+          clickAdId = impressionAdId AND
+          clickTime BETWEEN impressionTime AND  impressionTime + interval 1 hour"""),
+    "leftOuter")
   }
 }
