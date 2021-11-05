@@ -7,5 +7,7 @@ scalaVersion := "2.12.10"
 // change this to 3.0.0 when released
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % "3.0.3",
-  "org.apache.spark" %% "spark-sql"  % "3.0.3"
+  "org.apache.spark" %% "spark-sql"  % "3.0.3",
+  "org.apache.spark" %% "spark-streaming" % "3.0.3"
+
 )
