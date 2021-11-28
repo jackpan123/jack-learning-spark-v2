@@ -1,10 +1,9 @@
 package com.jackpan.spark.chapter10
 
+import org.apache.spark.ml.PipelineModel
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions.{avg, lit}
-import org.apache.spark.ml.evaluation.RegressionEvaluator
 
-object BaselineModelExample {
+object LoadModelExample {
 
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
@@ -20,15 +19,10 @@ object BaselineModelExample {
     val Array(trainDF, testDF) = airbnbDF.randomSplit(Array(.8, .2), seed = 42)
     println(f"""There are ${trainDF.count} rows in the training set, and ${testDF.count} in the test set""")
 
-    val avgPrice = trainDF.select(avg("price")).first().getDouble(0)
-    val predDF = testDF.withColumn("avgPrediction", lit(avgPrice))
-
-    val regressionEvaluator = new RegressionEvaluator()
-      .setPredictionCol("avgPrediction")
-      .setLabelCol("price")
-      .setMetricName("rmse")
-
-    val rmse = regressionEvaluator.evaluate(predDF)
-    println(f"The RMSE for predicting the average price is $rmse%.2f")
+    val pipelinePath = "/Users/jackpan/JackPanDocuments/temporary/model/lr-pipeline-model"
+    val savedPipelineModel = PipelineModel.load(pipelinePath)
+    val predDF = savedPipelineModel.transform(testDF)
+    predDF.select("features", "price", "prediction").show(5, truncate = false)
   }
+
 }
