@@ -60,5 +60,9 @@ object MachineLearningExample {
     val rmse = regressionEvaluator.evaluate(predDF)
     println(f"RMSE is $rmse%.1f")
 
+    val r2 = regressionEvaluator.setMetricName("r2").evaluate(predDF)
+    println(s"R2 is $r2")
+
+
   }
 }
