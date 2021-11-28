@@ -4,6 +4,7 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.ml.feature.{VectorAssembler, OneHotEncoder,StringIndexer}
 import org.apache.spark.ml.regression.LinearRegression
 import org.apache.spark.ml.Pipeline
+import org.apache.spark.ml.evaluation.RegressionEvaluator
 
 
 object MachineLearningExample {
@@ -18,8 +19,8 @@ object MachineLearningExample {
     airbnbDF.select("neighbourhood_cleansed", "room_type", "bedrooms", "bathrooms",
       "number_of_reviews", "price").show(5)
 
-    val Array(trainDF, testDf) = airbnbDF.randomSplit(Array(.8, .2), seed = 42)
-    println(f"""There are ${trainDF.count} rows in the training set, and ${testDf.count} in the test set""")
+    val Array(trainDF, testDF) = airbnbDF.randomSplit(Array(.8, .2), seed = 42)
+    println(f"""There are ${trainDF.count} rows in the training set, and ${testDF.count} in the test set""")
 
     val categoricalCols = trainDF.dtypes.filter(_._2 == "StringType").map(_._1)
     val indexOutputCols = categoricalCols.map(_ + "Index")
@@ -48,8 +49,16 @@ object MachineLearningExample {
 
     val pipeline = new Pipeline().setStages(Array(stringIndexer, oheEncoder, vectorAssembler, lr))
     val pipelineModel = pipeline.fit(trainDF)
-    val predDF = pipelineModel.transform(testDf)
+    val predDF = pipelineModel.transform(testDF)
     predDF.select("features", "price", "prediction").show(5, truncate = false)
+
+    val regressionEvaluator = new RegressionEvaluator()
+      .setPredictionCol("prediction")
+      .setLabelCol("price")
+      .setMetricName("rmse")
+
+    val rmse = regressionEvaluator.evaluate(predDF)
+    println(f"RMSE is $rmse%.1f")
 
   }
 }
