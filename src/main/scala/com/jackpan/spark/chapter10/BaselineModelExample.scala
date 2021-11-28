@@ -30,5 +30,8 @@ object BaselineModelExample {
 
     val rmse = regressionEvaluator.evaluate(predDF)
     println(f"The RMSE for predicting the average price is $rmse%.2f")
+
+    val r2 = regressionEvaluator.setMetricName("r2").evaluate(predDF)
+    println(s"R2 is $r2")
   }
 }
