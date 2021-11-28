@@ -63,6 +63,7 @@ object MachineLearningExample {
     val r2 = regressionEvaluator.setMetricName("r2").evaluate(predDF)
     println(s"R2 is $r2")
 
-
+    val pipelinePath = "/Users/jackpan/JackPanDocuments/temporary/model/lr-pipeline-model"
+    pipelineModel.write.overwrite().save(pipelinePath)
   }
 }
