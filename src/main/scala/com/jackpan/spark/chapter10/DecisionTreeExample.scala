@@ -3,6 +3,7 @@ package com.jackpan.spark.chapter10
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
 import org.apache.spark.ml.regression.DecisionTreeRegressor
+import org.apache.spark.ml.regression.RandomForestRegressor
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 import org.apache.spark.ml.evaluation.RegressionEvaluator
@@ -72,5 +73,10 @@ object DecisionTreeExample {
     println(s"RMSE is $rmse")
     println(s"R2 is $r2")
     println("*-"*80)
+
+    val rf = new RandomForestRegressor()
+      .setLabelCol("price")
+      .setMaxBins(40)
+      .setSeed(42)
   }
 }
