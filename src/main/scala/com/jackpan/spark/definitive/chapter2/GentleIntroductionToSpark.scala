@@ -31,6 +31,23 @@ object GentleIntroductionToSpark {
 //    spark.conf.set("spark.sql.shuffle.partitions", "5")
 
     flightData2015.sort("count").explain()
+
+    flightData2015.createOrReplaceTempView("flight_data_2015")
+
+    val sqlWay = spark.sql(
+      """
+        SELECT DEST_COUNTRY_NAME, count(1)
+        FROM flight_data_2015
+        GROUP BY DEST_COUNTRY_NAME
+        """)
+
+    val dataFrameWay = flightData2015
+      .groupBy("DEST_COUNTRY_NAME")
+      .count()
+
+    sqlWay.explain
+    dataFrameWay.explain
+
   }
 
 
