@@ -56,7 +56,16 @@ object GentleIntroductionToSpark {
     val rows1 = flightData2015.select(max("count")).take(1)
     rows1.foreach(row => println(row.toString()))
 
+    val maxSql = spark.sql(
+      """
+        SELECT DEST_COUNTRY_NAME, sum(count) as destination_total
+        FROM flight_data_2015
+        GROUP BY DEST_COUNTRY_NAME
+        ORDER BY sum(count) DESC
+        LIMIT 5
+        """)
 
+    maxSql.show()
 
   }
 
