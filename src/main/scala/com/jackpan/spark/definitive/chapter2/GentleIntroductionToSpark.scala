@@ -1,6 +1,7 @@
 package com.jackpan.spark.definitive.chapter2
 
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions._
 
 object GentleIntroductionToSpark {
 
@@ -47,6 +48,15 @@ object GentleIntroductionToSpark {
 
     sqlWay.explain
     dataFrameWay.explain
+
+    // Find max count in the dataset. It is 370002
+    val rows = spark.sql("""SELECT max(count) from flight_data_2015""").take(1)
+    // Array foreach
+    rows.foreach(row => println(row.getInt(0)))
+    val rows1 = flightData2015.select(max("count")).take(1)
+    rows1.foreach(row => println(row.toString()))
+
+
 
   }
 
