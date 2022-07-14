@@ -1,7 +1,7 @@
 package com.jackpan.spark.definitive.chapter3
 
 import org.apache.spark.sql.SparkSession
-
+import org.apache.spark.sql.functions._
 
 
 case class Flight(DEST_COUNTRY_NAME: String,
@@ -38,5 +38,16 @@ object SparksToolsetTour {
 
     staticDataFrame.createOrReplaceTempView("retail_data")
     val staticSchema = staticDataFrame.schema
+
+    staticDataFrame
+      .selectExpr(
+        "CustomerId",
+        "(UnitPrice * Quantity) as total_cost",
+        "InvoiceDate")
+      .groupBy(
+        col("CustomerId"), window(col("InvoiceDate"), "1 day"))
+      .sum("total_cost")
+      .show(5)
+
   }
 }
