@@ -29,7 +29,7 @@ object GentleIntroductionToSpark {
 
     // By default, spark perform a shuffle, Spark out put 200 partitions and
     // you can set conf to reduce output partitions.
-//    spark.conf.set("spark.sql.shuffle.partitions", "5")
+    spark.conf.set("spark.sql.shuffle.partitions", "5")
 
     flightData2015.sort("count").explain()
 
@@ -72,6 +72,13 @@ object GentleIntroductionToSpark {
       .sum("count")
       .withColumnRenamed("sum(count)", "destination_total")
       .sort(desc("destination_total")).limit(5).show()
+
+
+    flightData2015
+      .groupBy("DEST_COUNTRY_NAME")
+      .sum("count")
+      .withColumnRenamed("sum(count)", "destination_total")
+      .sort(desc("destination_total")).limit(5).explain()
 
   }
 
