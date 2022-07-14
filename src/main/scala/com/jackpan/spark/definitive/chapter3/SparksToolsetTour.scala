@@ -49,5 +49,35 @@ object SparksToolsetTour {
       .sum("total_cost")
       .show(5)
 
+    val streamingDataFrame = spark.readStream
+      .schema(staticSchema)
+      .option("maxFilesPerTrigger", 1)
+      .format("csv")
+      .option("header", "true")
+      .load("/Users/jackpan/JackPanDocuments/jack-project/spark/jack-learning-spark-v2/data/retail-data/by-day/*.csv")
+
+    print(streamingDataFrame.isStreaming)
+
+    val purchaseByCustomerPerHour = streamingDataFrame
+      .selectExpr(
+        "CustomerId",
+        "(UnitPrice * Quantity) as total_cost",
+        "InvoiceDate")
+      .groupBy(
+        $"CustomerId", window($"InvoiceDate", "1 day"))
+      .sum("total_cost")
+
+    purchaseByCustomerPerHour.writeStream
+      .format("memory")
+      .queryName("customer_purchases")
+      .outputMode("complete")
+      .start()
+
+    spark.sql(
+      """
+        SELECT *
+        FROM customer_purchases
+        ORDER_BY 'sum(total_cost)' DESC
+        """).show(5)
   }
 }
