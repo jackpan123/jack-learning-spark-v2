@@ -79,5 +79,14 @@ object SparksToolsetTour {
         FROM customer_purchases
         ORDER_BY 'sum(total_cost)' DESC
         """).show(5)
+
+
+    purchaseByCustomerPerHour.writeStream
+      .format("console")
+      .queryName("customer_purchases_2")
+      .outputMode("complete")
+      .start()
+
+    
   }
 }
