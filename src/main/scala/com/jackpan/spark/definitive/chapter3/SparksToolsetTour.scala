@@ -73,20 +73,30 @@ object SparksToolsetTour {
       .outputMode("complete")
       .start()
 
+//    spark.sql(
+//      """
+//        SELECT *
+//        FROM customer_purchases
+//        ORDER_BY 'sum(total_cost)' DESC
+//        """).show(5)
     spark.sql(
       """
         SELECT *
         FROM customer_purchases
-        ORDER_BY 'sum(total_cost)' DESC
-        """).show(5)
+        ORDER BY `sum(total_cost)` DESC
+        """)
+      .show(5)
 
 
-    purchaseByCustomerPerHour.writeStream
-      .format("console")
-      .queryName("customer_purchases_2")
-      .outputMode("complete")
-      .start()
+//    purchaseByCustomerPerHour.writeStream
+//      .format("console")
+//      .queryName("customer_purchases_2")
+//      .outputMode("complete")
+//      .start()
 
-    
+
+//    staticDataFrame.printSchema()
+
+
   }
 }
