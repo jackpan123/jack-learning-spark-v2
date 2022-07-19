@@ -1,7 +1,9 @@
 package com.jackpan.spark.definitive.chapter3
 
+import org.apache.spark.ml.Pipeline
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
+import org.apache.spark.ml.feature._
 
 
 case class Flight(DEST_COUNTRY_NAME: String,
@@ -110,6 +112,23 @@ object SparksToolsetTour {
     println(trainDataFrame.count())
     println(testDataFrame.count())
 
+    val indexer = new StringIndexer()
+      .setInputCol("day_of_week")
+      .setOutputCol("day_of_week_index")
 
+    val encoder = new OneHotEncoder()
+      .setInputCol("day_of_week_index")
+      .setOutputCol("day_of_week_encoded")
+
+    val VectorAssembler = new VectorAssembler()
+      .setInputCols(Array("UnitPrice", "Quantity", "day_of_week_encoded"))
+      .setOutputCol("features")
+
+    val transformationPipeline = new Pipeline()
+      .setStages(Array(indexer, encoder, VectorAssembler))
+
+    val fittedPipeline = transformationPipeline.fit(trainDataFrame)
+
+    val transformedPipeline = fittedPipeline.transform(trainDataFrame)
   }
 }
