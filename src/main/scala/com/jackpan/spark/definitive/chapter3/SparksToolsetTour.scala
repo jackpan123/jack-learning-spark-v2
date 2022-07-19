@@ -4,6 +4,7 @@ import org.apache.spark.ml.Pipeline
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 import org.apache.spark.ml.feature._
+import org.apache.spark.ml.clustering.KMeans
 
 
 case class Flight(DEST_COUNTRY_NAME: String,
@@ -129,6 +130,17 @@ object SparksToolsetTour {
 
     val fittedPipeline = transformationPipeline.fit(trainDataFrame)
 
-    val transformedPipeline = fittedPipeline.transform(trainDataFrame)
+    val transformedTraining = fittedPipeline.transform(trainDataFrame)
+
+    transformedTraining.cache()
+
+    val kmeans = new KMeans()
+      .setK(20)
+      .setSeed(1L)
+
+    val kmModel = kmeans.fit(transformedTraining)
+
+//    kmModel.c
+
   }
 }
