@@ -56,7 +56,7 @@ object SparksToolsetTour {
       .option("header", "true")
       .load("/Users/jackpan/JackPanDocuments/jack-project/spark/jack-learning-spark-v2/data/retail-data/by-day/*.csv")
 
-    print(streamingDataFrame.isStreaming)
+    println(streamingDataFrame.isStreaming)
 
     val purchaseByCustomerPerHour = streamingDataFrame
       .selectExpr(
@@ -67,11 +67,11 @@ object SparksToolsetTour {
         $"CustomerId", window($"InvoiceDate", "1 day"))
       .sum("total_cost")
 
-    purchaseByCustomerPerHour.writeStream
-      .format("memory")
-      .queryName("customer_purchases")
-      .outputMode("complete")
-      .start()
+//    purchaseByCustomerPerHour.writeStream
+//      .format("memory")
+//      .queryName("customer_purchases")
+//      .outputMode("complete")
+//      .start()
 
 //    spark.sql(
 //      """
@@ -79,13 +79,13 @@ object SparksToolsetTour {
 //        FROM customer_purchases
 //        ORDER_BY 'sum(total_cost)' DESC
 //        """).show(5)
-    spark.sql(
-      """
-        SELECT *
-        FROM customer_purchases
-        ORDER BY `sum(total_cost)` DESC
-        """)
-      .show(5)
+//    spark.sql(
+//      """
+//        SELECT *
+//        FROM customer_purchases
+//        ORDER BY `sum(total_cost)` DESC
+//        """)
+//      .show(5)
 
 
 //    purchaseByCustomerPerHour.writeStream
@@ -94,8 +94,21 @@ object SparksToolsetTour {
 //      .outputMode("complete")
 //      .start()
 
+    staticDataFrame.printSchema()
 
-//    staticDataFrame.printSchema()
+    val preppedDataFrame = staticDataFrame
+      .na.fill(0)
+      .withColumn("day_of_week", date_format($"InvoiceDate", "EEEE"))
+      .coalesce(5)
+
+    val trainDataFrame = preppedDataFrame
+      .where("InvoiceDate < '2011-07-01'")
+
+    val testDataFrame = preppedDataFrame
+      .where("InvoiceDate >= '2011-07-01'")
+
+    println(trainDataFrame.count())
+    println(testDataFrame.count())
 
 
   }
