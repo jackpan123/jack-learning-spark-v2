@@ -142,5 +142,7 @@ object SparksToolsetTour {
 
 //    kmModel.c
 
+    spark.sparkContext.parallelize(Seq(1, 2, 3)).toDF()
+
   }
 }
