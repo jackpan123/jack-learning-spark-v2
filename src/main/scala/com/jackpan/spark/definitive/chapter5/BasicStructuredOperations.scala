@@ -42,12 +42,11 @@ object BasicStructuredOperations {
 //    $"myColumn"
 //    'myColumn
 
-
-//    df.col("count")
-//
-//    (((col("someCol") + 5) * 200) -6) < col("otherCol")
-//
-//    import org.apache.spark.
+    // Get DataFrame columns
+    val columns = df.columns
+    for (ele <- columns) {
+      println(ele)
+    }
 
   }
 }
