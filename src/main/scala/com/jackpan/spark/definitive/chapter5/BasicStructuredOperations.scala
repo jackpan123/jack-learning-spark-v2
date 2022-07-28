@@ -4,6 +4,7 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.{StructField, StructType, StringType, LongType}
 import org.apache.spark.sql.types.Metadata
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.Row
 
 
 object BasicStructuredOperations {
@@ -47,6 +48,17 @@ object BasicStructuredOperations {
     for (ele <- columns) {
       println(ele)
     }
+
+    // Get first row record
+    val row = df.first()
+    println(row.getLong(2))
+
+    // Create you own row
+    val myRow = Row("Hello", null, 1, false)
+    myRow(0)
+    myRow(0).asInstanceOf[String]
+    println(myRow.getString(0))
+    println(myRow.getInt(2))
 
   }
 }
