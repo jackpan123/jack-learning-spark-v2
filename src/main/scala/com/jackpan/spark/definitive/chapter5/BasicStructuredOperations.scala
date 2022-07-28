@@ -1,7 +1,7 @@
 package com.jackpan.spark.definitive.chapter5
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.types.{StructField, StructType, StringType, LongType}
+import org.apache.spark.sql.types._
 import org.apache.spark.sql.types.Metadata
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.Row
@@ -54,13 +54,26 @@ object BasicStructuredOperations {
     println(row.getLong(2))
 
     // Create you own row
-    val myRow = Row("Hello", null, 1, false)
+    val myRow = Row("Hello", null, 1L)
     myRow(0)
     myRow(0).asInstanceOf[String]
     println(myRow.getString(0))
-    println(myRow.getInt(2))
+    println(myRow.getLong(2))
 
     df.createOrReplaceTempView("dfTable")
     spark.sql("Select * from dfTable where count > 20").show()
+
+
+    val myOwnSchema = new StructType(Array(
+      new StructField("some", StringType, true),
+      new StructField("col", StringType, true),
+      new StructField("names", LongType, false)
+    ))
+
+    val myRows = Seq(myRow)
+    val myRDD = spark.sparkContext.parallelize(myRows)
+    val myDf = spark.createDataFrame(myRDD, myOwnSchema)
+    myDf.show()
+
   }
 }
