@@ -3,7 +3,7 @@ package com.jackpan.spark.definitive.chapter5
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.{StructField, StructType, StringType, LongType}
 import org.apache.spark.sql.types.Metadata
-import org.apache.spark.sql.functions.{col, column}
+import org.apache.spark.sql.functions._
 
 
 object BasicStructuredOperations {
@@ -33,6 +33,12 @@ object BasicStructuredOperations {
 
     df.select(col("DEST_COUNTRY_NAME"), column("count")).show()
     df.select(col("DEST_COUNTRY_NAME"), df.col("count") + 2).show()
+
+    df.select(expr("count + 1")).show()
+
+    // The difference between use col function and use expr function
+    df.select(((((col("count") + 5) * 200) -6)) < col("count")).show()
+    df.select(expr("(((count + 5) * 200) -6) < count")).show()
 //    $"myColumn"
 //    'myColumn
 
