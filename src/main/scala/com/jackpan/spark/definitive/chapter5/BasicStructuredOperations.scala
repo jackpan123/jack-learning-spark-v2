@@ -60,5 +60,7 @@ object BasicStructuredOperations {
     println(myRow.getString(0))
     println(myRow.getInt(2))
 
+    df.createOrReplaceTempView("dfTable")
+    spark.sql("Select * from dfTable where count > 20").show()
   }
 }
