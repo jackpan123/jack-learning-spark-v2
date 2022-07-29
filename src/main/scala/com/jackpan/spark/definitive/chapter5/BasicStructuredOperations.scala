@@ -75,5 +75,17 @@ object BasicStructuredOperations {
     val myDf = spark.createDataFrame(myRDD, myOwnSchema)
     myDf.show()
 
+//    val myDF = Seq(("Hello", 2, 1L)).toDF("col1", "col2", "col3")
+
+    df.select("DEST_COUNTRY_NAME").show(2)
+
+    df.select("DEST_COUNTRY_NAME", "ORIGIN_COUNTRY_NAME").show(2)
+
+    df.select(
+      df.col("DEST_COUNTRY_NAME"),
+      col("DEST_COUNTRY_NAME"),
+      column("DEST_COUNTRY_NAME"),
+      expr("DEST_COUNTRY_NAME")
+    ).show(2)
   }
 }
