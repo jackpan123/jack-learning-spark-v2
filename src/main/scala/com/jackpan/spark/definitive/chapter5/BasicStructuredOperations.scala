@@ -136,5 +136,27 @@ object BasicStructuredOperations {
     val withReplacement = false;
     val fraction = 0.5
     df.sample(withReplacement, fraction, seed).show()
+
+    // Data split training data and test data.
+    val dataFrames = df.randomSplit(Array(0.25, 0.75), seed)
+    println(dataFrames(0).count() > dataFrames(1).count())
+
+
+    val schema = df.schema
+    val newRows = Seq(
+      Row("New Country", "Other Country", 5L),
+      Row("New Country 2", "Other Country 3", 1L)
+    )
+
+    val parallelizedRows = spark.sparkContext.parallelize(newRows)
+    val newDF = spark.createDataFrame(parallelizedRows, schema)
+
+    df.union(newDF)
+      .where("count = 1")
+      .where(col("ORIGIN_COUNTRY_NAME") =!= "United States")
+      .show()
+
+
+
   }
 }
