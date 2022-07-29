@@ -87,5 +87,21 @@ object BasicStructuredOperations {
       column("DEST_COUNTRY_NAME"),
       expr("DEST_COUNTRY_NAME")
     ).show(2)
+
+    df.select(expr("DEST_COUNTRY_NAME AS destination")).show(2)
+
+    df.select(expr("DEST_COUNTRY_NAME AS destination").alias("DEST_COUNTRY_NAME")).show(2)
+
+    df.select(expr("*"), lit(1).as("One")).show(2)
+
+    df.withColumn("numberOne", lit(1)).show(2)
+
+    df.withColumn("withinCountry", expr("ORIGIN_COUNTRY_NAME == DEST_COUNTRY_NAME"))
+
+    df.withColumn("Destination", expr("DEST_COUNTRY_NAME")).columns
+
+    df.withColumnRenamed("DEST_COUNTRY_NAME", "dest").columns
+
+    
   }
 }
