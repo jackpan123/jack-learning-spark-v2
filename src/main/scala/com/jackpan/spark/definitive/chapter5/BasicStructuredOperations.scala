@@ -111,5 +111,24 @@ object BasicStructuredOperations {
       "`This Long Column-Name`",
       "`This Long Column-Name` as `new col`"
     ).show(2)
+
+    dfWithLongColName.createOrReplaceTempView("dfTableLong")
+
+    dfWithLongColName.select(col("This Long Column-Name")).columns
+
+    df.drop("ORIGIN_COUNTRY_NAME").columns
+
+    df.drop("ORIGIN_COUNTRY_NAME", "DEST_COUNTRY_NAME").columns
+
+    df.withColumn("count2", col("count").cast("long")).show(2)
+
+    df.filter(col("count") < 2).show(2)
+    df.where("count < 2").show(2)
+
+    df.where(col("count") < 2).where(col("ORIGIN_COUNTRY_NAME") =!= "Croatia")
+      .show(2)
+
+    println(df.select("ORIGIN_COUNTRY_NAME", "DEST_COUNTRY_NAME").distinct().count())
+    println(df.select("ORIGIN_COUNTRY_NAME").distinct().count())
   }
 }
