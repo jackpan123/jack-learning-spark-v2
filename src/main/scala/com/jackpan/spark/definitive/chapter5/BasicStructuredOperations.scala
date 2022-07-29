@@ -156,6 +156,14 @@ object BasicStructuredOperations {
       .where(col("ORIGIN_COUNTRY_NAME") =!= "United States")
       .show()
 
+    df.sort("count").show(5)
+    df.orderBy("count", "DEST_COUNTRY_NAME").show(5)
+    df.orderBy(col("count"),col("DEST_COUNTRY_NAME")).show(5)
+
+    df.orderBy(expr("count desc")).show(2)
+    df.orderBy(desc("count"), asc("DEST_COUNTRY_NAME")).show(2)
+
+
 
 
   }
