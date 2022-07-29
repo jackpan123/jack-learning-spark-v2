@@ -130,5 +130,11 @@ object BasicStructuredOperations {
 
     println(df.select("ORIGIN_COUNTRY_NAME", "DEST_COUNTRY_NAME").distinct().count())
     println(df.select("ORIGIN_COUNTRY_NAME").distinct().count())
+
+    // Get random data set
+    val seed = 5
+    val withReplacement = false;
+    val fraction = 0.5
+    df.sample(withReplacement, fraction, seed).show()
   }
 }
