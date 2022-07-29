@@ -102,6 +102,14 @@ object BasicStructuredOperations {
 
     df.withColumnRenamed("DEST_COUNTRY_NAME", "dest").columns
 
-    
+    val dfWithLongColName = df.withColumn(
+      "This Long Column-Name",
+      expr("ORIGIN_COUNTRY_NAME")
+    )
+
+    dfWithLongColName.selectExpr(
+      "`This Long Column-Name`",
+      "`This Long Column-Name` as `new col`"
+    ).show(2)
   }
 }
