@@ -164,7 +164,25 @@ object BasicStructuredOperations {
     df.orderBy(desc("count"), asc("DEST_COUNTRY_NAME")).show(2)
 
 
+    df.limit(5).show()
 
+    df.orderBy(expr("count desc")).limit(6).show()
+
+    println("RDD partition: " + df.rdd.getNumPartitions)
+
+    df.repartition(5, col("DEST_COUNTRY_NAME")).coalesce(2)
+
+    val collectDF = df.limit(10)
+    collectDF.take(5)
+    collectDF.show()
+    collectDF.show(5, false)
+    collectDF.collect()
+
+    val iterator = collectDF.toLocalIterator()
+    while (iterator.hasNext) {
+      val row = iterator.next()
+      println(row.getLong(2))
+    }
 
   }
 }
