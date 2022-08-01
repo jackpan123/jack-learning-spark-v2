@@ -36,5 +36,29 @@ object WorkingDifferentTypesData {
     df.where("InvoiceNo <> 536365")
       .show(5, false)
 
+
+    val priceFilter = col("UnitPrice") > 600
+    val descripFilter = col("Description").contains("POSTAGE")
+    df.where(col("StockCode").isin("DOT")).where(priceFilter.or(descripFilter))
+      .show()
+
+    val DOTCodeFilter = col("StockCode") === "DOT"
+
+    df.withColumn("isExpensive", DOTCodeFilter.and(priceFilter.or(descripFilter)))
+      .where("isExpensive")
+      .select("unitPrice", "isExpensive").show(5)
+
+    df.withColumn("isExpensive", not(col("UnitPrice").leq(250)))
+      .filter("isExpensive")
+      .select("Description", "UnitPrice").show(5)
+
+    df.withColumn("isExpensive", expr("NOT UnitPrice <= 250"))
+      .filter("isExpensive")
+      .select("Description", "UnitPrice").show(5)
+
+    // Use equals is null safe!
+    df.where(col("Description").eqNullSafe("hello")).show()
+
+
   }
 }
